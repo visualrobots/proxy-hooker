@@ -34,6 +34,12 @@ MIT
 Installation
 ------------
 
+Pull the Docker image:
+
+```bash
+docker pull fguillot/proxy-hooker
+```
+
 Try with your local Docker Machine:
 
 ```bash
