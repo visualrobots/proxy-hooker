@@ -62,7 +62,7 @@ $ docker run -d --name my-container -P kanboard/kanboard:latest
 Proxy Hooker will handle the event:
 
 ```bash
-2016/02/27 20:01:04 Receive 'start' event for container '1a214bfe2d3c1750561e7193e48ec219e246e4b57afe4939203a5d464b601456'
+2016/02/27 20:01:04 Received 'start' event for container '1a214bfe2d3c1750561e7193e48ec219e246e4b57afe4939203a5d464b601456'
 2016/02/27 20:01:04 Adding container '1a214bfe2d3c1750561e7193e48ec219e246e4b57afe4939203a5d464b601456'
 2016/02/27 20:01:04 Generated file '/etc/nginx/conf.d/vhosts.conf' from template '/etc/nginx/template.tpl'
 2016/02/27 20:01:04 Command 'nginx -s reload' executed
@@ -93,7 +93,7 @@ my-container
 Proxy Hooker receive the event:
 
 ```
-2016/02/27 20:01:14 Receive 'stop' event for container '1a214bfe2d3c1750561e7193e48ec219e246e4b57afe4939203a5d464b601456'
+2016/02/27 20:01:14 Received 'stop' event for container '1a214bfe2d3c1750561e7193e48ec219e246e4b57afe4939203a5d464b601456'
 2016/02/27 20:01:14 Removing container '1a214bfe2d3c1750561e7193e48ec219e246e4b57afe4939203a5d464b601456'
 2016/02/27 20:01:14 Generated file '/etc/nginx/conf.d/vhosts.conf' from template '/etc/nginx/template.tpl'
 2016/02/27 20:01:14 Command 'nginx -s reload' executed

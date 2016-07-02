@@ -39,7 +39,7 @@ func (e *EventHandler) Listen() {
 }
 
 func (e *EventHandler) HandleStartEvent(id string) {
-	log.Printf("Receive 'start' event for container '%s'", id)
+	log.Printf("Received 'start' event for container '%s'", id)
 
 	container := e.containerHandler.GetContainerInfo(id)
 
@@ -53,7 +53,7 @@ func (e *EventHandler) HandleStartEvent(id string) {
 }
 
 func (e *EventHandler) HandleStopEvent(id string) {
-	log.Printf("Receive 'stop' event for container '%s'", id)
+	log.Printf("Received 'stop' event for container '%s'", id)
 
 	if e.containerHandler.RemoveContainer(id) {
 		e.templateHandler.GenerateFile()
