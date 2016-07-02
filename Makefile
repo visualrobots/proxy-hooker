@@ -9,7 +9,7 @@ build-linux:
 build-darwin:
 	@ GOOS=darwin GOARCH=amd64 go build -o $(APP) src/*.go
 
-image:
+image: build-linux
 	@ docker build -t $(IMAGE):$(TAG) .
 
 pull:

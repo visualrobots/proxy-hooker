@@ -25,7 +25,10 @@ func main() {
 
 	containerHandler := NewContainerHandler(client, *domain)
 	processHandler := NewProcessHandler(*reloadCommand)
+
 	templateHandler := NewTemplateHandler(*configFile, *templateFile, containerHandler)
+	templateHandler.GenerateFile()
+
 	eventHandler := NewEventHandler(client, templateHandler, processHandler, containerHandler)
 	eventHandler.Listen()
 }
