@@ -16,6 +16,7 @@ type EventHandler struct {
 	templateHandler  *TemplateHandler
 	processHandler   *ProcessHandler
 	containerHandler *ContainerHandler
+	excludeContainer string
 }
 
 func (e *EventHandler) Listen() {
@@ -42,12 +43,12 @@ func (e *EventHandler) HandleStartEvent(id string) {
 
 	container := e.containerHandler.GetContainerInfo(id)
 
-	if container.ExternalPort != "" {
+	if container.ExternalPort != "" && container.Name != e.excludeContainer {
 		e.containerHandler.AddContainer(container)
 		e.templateHandler.GenerateFile()
 		e.processHandler.Reload()
 	} else {
-		log.Printf("Event ignored, no port exposed for container '%s'", id)
+		log.Printf("Event ignored, no port exposed for container '%s' or filtered out", id)
 	}
 }
 
@@ -60,6 +61,6 @@ func (e *EventHandler) HandleStopEvent(id string) {
 	}
 }
 
-func NewEventHandler(client *docker.Client, templateHandler *TemplateHandler, processHandler *ProcessHandler, containerHandler *ContainerHandler) *EventHandler {
-	return &EventHandler{client, templateHandler, processHandler, containerHandler}
+func NewEventHandler(client *docker.Client, templateHandler *TemplateHandler, processHandler *ProcessHandler, containerHandler *ContainerHandler, excludeContainer *string) *EventHandler {
+	return &EventHandler{client, templateHandler, processHandler, containerHandler, *excludeContainer}
 }

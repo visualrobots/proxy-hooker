@@ -110,6 +110,8 @@ Usage of ./proxy-hooker:
       Config file generated (default "/etc/nginx/conf.d/vhosts.conf")
   -domain string
       Virtual host domain (default "mydomain.tld")
+  -exclude string
+      Exclude a container name (default "proxy-hooker")
   -reload-command string
       Command to run to reload the reverse proxy (default "nginx -s reload")
   -socket string
