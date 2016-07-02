@@ -8,6 +8,7 @@ import (
 const (
 	EVENT_START = "start"
 	EVENT_STOP  = "stop"
+	EVENT_DIE   = "die"
 )
 
 type EventHandler struct {
@@ -28,6 +29,8 @@ func (e *EventHandler) Listen() {
 			case EVENT_START:
 				go e.HandleStartEvent(event.ID)
 			case EVENT_STOP:
+				fallthrough
+			case EVENT_DIE:
 				go e.HandleStopEvent(event.ID)
 			}
 		}
