@@ -4,7 +4,6 @@ import (
 	"flag"
 	"github.com/fsouza/go-dockerclient"
 	"log"
-	"os"
 )
 
 func main() {
@@ -12,13 +11,10 @@ func main() {
 	var configFile = flag.String("config", "/etc/nginx/nginx.conf", "Config file generated")
 	var templateFile = flag.String("template", "/etc/nginx/template.tpl", "Configuration template")
 	var domain = flag.String("domain", "mydomain.tld", "Virtual host domain")
-	var endpoint = flag.String("endpoint", os.Getenv("DOCKER_HOST"), "Docker Host endpoint")
-	var cert = flag.String("cert", "/certs/server.pem", "TLS certificate")
-	var key = flag.String("key", "/certs/server-key.pem", "TLS Key")
-	var ca = flag.String("ca", "/certs/ca.pem", "TLS CA")
+	var endpoint = flag.String("socket", "unix:///var/run/docker.sock", "Docker Unix socket")
 	flag.Parse()
 
-	var client, err = docker.NewTLSClient(*endpoint, *cert, *key, *ca)
+	var client, err = docker.NewClient(*endpoint)
 	if err != nil {
 		log.Fatalln(err)
 	}

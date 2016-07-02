@@ -3,20 +3,25 @@ CONTAINER = proxy-hooker
 IMAGE = fguillot/proxy-hooker
 TAG = latest
 
-build:
+build-linux:
 	@ GOOS=linux GOARCH=amd64 go build -o $(APP) src/*.go
+
+build-darwin:
+	@ GOOS=darwin GOARCH=amd64 go build -o $(APP) src/*.go
 
 image:
 	@ docker build -t $(IMAGE):$(TAG) .
+
+pull:
+	@ docker pull $(IMAGE):$(TAG)
 
 push:
 	@ docker push $(IMAGE)
 
 run:
-	@ docker run -d --name $(CONTAINER) \
-	-p 80:80 \
-	-v /var/lib/boot2docker:/certs:ro \
-	-e DOCKER_HOST=$$DOCKER_HOST \
+	@ docker run --name $(CONTAINER) \
+	-p 10000:80 \
+	-v /var/run/docker.sock:/var/run/docker.sock:ro \
 	$(IMAGE):$(TAG)
 
 logs:
@@ -30,4 +35,4 @@ clean:
 	@ rm -f $(APP)
 
 all:
-	clean build destroy image run
+	clean build-linux destroy image run

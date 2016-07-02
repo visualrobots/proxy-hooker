@@ -1,5 +1,5 @@
-FROM gliderlabs/alpine:latest
-RUN apk-install nginx bash s6
+FROM alpine:3.4
+RUN apk update && apk add nginx bash s6 curl && rm -rf /var/cache/apk/*
 
 COPY proxy-hooker /usr/bin/
 COPY config/template.tpl /etc/nginx/

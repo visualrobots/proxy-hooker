@@ -45,8 +45,7 @@ Try with your local Docker Machine:
 ```bash
 docker run -d --name proxy-hooker \
     -p 80:80 \
-    -v /var/lib/boot2docker:/certs:ro \
-    -e DOCKER_HOST=$DOCKER_HOST \
+    -v /var/run/docker.sock:/var/run/docker.sock:ro \
     fguillot/proxy-hooker:latest
 ```
 
@@ -106,21 +105,15 @@ Usage
 -----
 
 ```bash
-Usage of /usr/bin/proxy-hooker:
-  -ca string
-        TLS CA (default "/certs/ca.pem")
-  -cert string
-        TLS certificate (default "/certs/server.pem")
+Usage of ./proxy-hooker:
   -config string
-        Config file generated (default "/etc/nginx/nginx.conf")
+      Config file generated (default "/etc/nginx/nginx.conf")
   -domain string
-        Virtual host domain (default "mydomain.tld")
-  -endpoint string
-        Docker Host endpoint (default "tcp://192.168.99.100:2376")
-  -key string
-        TLS Key (default "/certs/server-key.pem")
+      Virtual host domain (default "mydomain.tld")
   -reload-command string
-        Command to run to reload the reverse proxy (default "nginx -s reload")
+      Command to run to reload the reverse proxy (default "nginx -s reload")
+  -socket string
+      Docker Unix socket (default "unix:///var/run/docker.sock")
   -template string
-        Configuration template (default "/etc/nginx/template.tpl")
+      Configuration template (default "/etc/nginx/template.tpl")
 ```
