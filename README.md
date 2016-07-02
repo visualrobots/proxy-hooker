@@ -17,7 +17,7 @@ The docker image use Nginx but any reverse proxy software can be used.
 Features
 --------
 
-- Listen for container "start" and "stop" events
+- Listen for container "start", "stop" and "die" events
 - Generate the reverse proxy file from a template (Golang template syntax)
 - No dependency (written in Golang)
 
@@ -64,7 +64,7 @@ Proxy Hooker will handle the event:
 ```bash
 2016/02/27 20:01:04 Receive 'start' event for container '1a214bfe2d3c1750561e7193e48ec219e246e4b57afe4939203a5d464b601456'
 2016/02/27 20:01:04 Adding container '1a214bfe2d3c1750561e7193e48ec219e246e4b57afe4939203a5d464b601456'
-2016/02/27 20:01:04 Generated file '/etc/nginx/nginx.conf' from template '/etc/nginx/template.tpl'
+2016/02/27 20:01:04 Generated file '/etc/nginx/conf.d/vhosts.conf' from template '/etc/nginx/template.tpl'
 2016/02/27 20:01:04 Command 'nginx -s reload' executed
 ```
 
@@ -95,7 +95,7 @@ Proxy Hooker receive the event:
 ```
 2016/02/27 20:01:14 Receive 'stop' event for container '1a214bfe2d3c1750561e7193e48ec219e246e4b57afe4939203a5d464b601456'
 2016/02/27 20:01:14 Removing container '1a214bfe2d3c1750561e7193e48ec219e246e4b57afe4939203a5d464b601456'
-2016/02/27 20:01:14 Generated file '/etc/nginx/nginx.conf' from template '/etc/nginx/template.tpl'
+2016/02/27 20:01:14 Generated file '/etc/nginx/conf.d/vhosts.conf' from template '/etc/nginx/template.tpl'
 2016/02/27 20:01:14 Command 'nginx -s reload' executed
 ```
 
@@ -107,7 +107,7 @@ Usage
 ```bash
 Usage of ./proxy-hooker:
   -config string
-      Config file generated (default "/etc/nginx/nginx.conf")
+      Config file generated (default "/etc/nginx/conf.d/vhosts.conf")
   -domain string
       Virtual host domain (default "mydomain.tld")
   -reload-command string
