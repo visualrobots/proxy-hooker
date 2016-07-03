@@ -112,7 +112,7 @@ Usage of ./proxy-hooker:
       Virtual host domain (default "mydomain.tld")
   -exclude string
       Exclude a container name (default "proxy-hooker")
-  -reload-command string
+  -command string
       Command to run to reload the reverse proxy (default "nginx -s reload")
   -socket string
       Docker Unix socket (default "unix:///var/run/docker.sock")
