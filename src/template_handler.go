@@ -1,8 +1,10 @@
 package main
 
 import (
+	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 	"text/template"
 )
 
@@ -12,20 +14,27 @@ type TemplateHandler struct {
 	containerHandler *ContainerHandler
 }
 
+var funcMap = template.FuncMap{
+	"strip": func(s1, s2 string) string {
+		return strings.Replace(s2, s1, "", -1)
+	},
+}
+
 func (t *TemplateHandler) GenerateFile() {
-	file, err := os.Create(t.dstFile)
-	defer file.Close()
+	dstFile, err := os.Create(t.dstFile)
+	defer dstFile.Close()
 
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	tpl, err := template.ParseFiles(t.templateFile)
+	tplFileContents, err := ioutil.ReadFile(t.templateFile)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	if err = tpl.Execute(file, t.containerHandler.Proxy); err != nil {
+	tpl := template.Must(template.New("vhosts").Funcs(funcMap).Parse(string(tplFileContents)))
+	if err = tpl.Execute(dstFile, t.containerHandler.Proxy); err != nil {
 		log.Fatalln(err)
 	}
 
