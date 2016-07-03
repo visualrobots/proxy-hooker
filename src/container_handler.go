@@ -7,9 +7,22 @@ import (
 )
 
 type ContainerHandler struct {
-	Proxy  *Proxy
-	client *docker.Client
-	lock   sync.RWMutex
+	Proxy            *Proxy
+	client           *docker.Client
+	lock             sync.RWMutex
+	excludeContainer string
+}
+
+func (c *ContainerHandler) BuildContainerList() {
+	opts := docker.ListContainersOptions{All: true, Filters: map[string][]string{"status": []string{"running"}}}
+	containers, err := c.client.ListContainers(opts)
+	if err != nil {
+		log.Printf("Unable to fetch list of containers: %s", err.Error())
+	}
+
+	for _, runningContainer := range containers {
+		c.FilterContainer(c.GetContainerInfo(runningContainer.ID))
+	}
 }
 
 func (c *ContainerHandler) GetContainerInfo(id string) *Container {
@@ -31,8 +44,18 @@ func (c *ContainerHandler) GetContainerInfo(id string) *Container {
 	}
 }
 
+func (c *ContainerHandler) FilterContainer(container *Container) bool {
+	if container.ExternalPort != "" && container.Name != c.excludeContainer {
+		c.AddContainer(container)
+		return true
+	}
+
+	log.Printf("Container '%s' is filtered out", container.Name)
+	return false
+}
+
 func (c *ContainerHandler) AddContainer(container *Container) {
-	log.Printf("Adding container '%s'", container.Id)
+	log.Printf("Adding container '%s'", container.Name)
 
 	c.lock.Lock()
 	defer c.lock.Unlock()
@@ -54,9 +77,10 @@ func (c *ContainerHandler) RemoveContainer(id string) bool {
 	return false
 }
 
-func NewContainerHandler(client *docker.Client, domain string) *ContainerHandler {
+func NewContainerHandler(client *docker.Client, domain string, excludeContainer string) *ContainerHandler {
 	c := &ContainerHandler{
-		client: client,
+		client:           client,
+		excludeContainer: excludeContainer,
 		Proxy: &Proxy{
 			Domain:     domain,
 			Containers: make(map[string]*Container),

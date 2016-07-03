@@ -24,9 +24,15 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	containerHandler := NewContainerHandler(client, *domain)
-	processHandler := NewProcessHandler(*reloadCommand)
+	containerHandler := NewContainerHandler(client, *domain, *excludeContainer)
+	containerHandler.BuildContainerList()
+
 	templateHandler := NewTemplateHandler(*configFile, *templateFile, containerHandler)
-	eventHandler := NewEventHandler(client, templateHandler, processHandler, containerHandler, excludeContainer)
+	templateHandler.GenerateFile()
+
+	processHandler := NewProcessHandler(*reloadCommand)
+	processHandler.Reload()
+
+	eventHandler := NewEventHandler(client, templateHandler, processHandler, containerHandler)
 	eventHandler.Listen()
 }
