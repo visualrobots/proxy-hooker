@@ -4,6 +4,7 @@ type Container struct {
 	Id           string
 	Name         string
 	InternalIp   string
+	InternalPort string
 	ExternalIp   string
 	ExternalPort string
 }

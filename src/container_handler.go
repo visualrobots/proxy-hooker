@@ -28,18 +28,20 @@ func (c *ContainerHandler) BuildContainerList() {
 func (c *ContainerHandler) GetContainerInfo(id string) *Container {
 	container, _ := c.client.InspectContainer(id)
 	externalIp, externalPort := c.findExternalNetworkSettings(container)
+	internapIp, internaPort := c.findInternalNetworkSettings(container)
 
 	return &Container{
 		Id:           container.ID,
 		Name:         container.Name[1:],
 		ExternalPort: externalPort,
 		ExternalIp:   externalIp,
-		InternalIp:   c.findInternalIpAddress(container),
+		InternalIp:   internapIp,
+		InternalPort: internaPort,
 	}
 }
 
 func (c *ContainerHandler) FilterContainer(container *Container) bool {
-	if container.ExternalPort != "" && container.Name != c.excludeContainer {
+	if container.InternalPort == "80" && container.Name != c.excludeContainer {
 		c.AddContainer(container)
 		return true
 	}
@@ -80,8 +82,8 @@ func (c *ContainerHandler) findExternalNetworkSettings(container *docker.Contain
 	return ip, port
 }
 
-func (c *ContainerHandler) findInternalIpAddress(container *docker.Container) string {
-	ip := container.NetworkSettings.IPAddress
+func (c *ContainerHandler) findInternalNetworkSettings(container *docker.Container) (ip, port string) {
+	ip = container.NetworkSettings.IPAddress
 
 	if ip == "" {
 		for _, network := range container.NetworkSettings.Networks {
@@ -92,7 +94,14 @@ func (c *ContainerHandler) findInternalIpAddress(container *docker.Container) st
 		}
 	}
 
-	return ip
+	for mapping, _ := range container.NetworkSettings.Ports {
+		if mapping.Proto() == "tcp" {
+			port = mapping.Port()
+			break
+		}
+	}
+
+	return ip, port
 }
 
 func NewContainerHandler(client *docker.Client, domain string, excludeContainer string) *ContainerHandler {
